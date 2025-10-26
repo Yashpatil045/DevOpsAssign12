@@ -3,7 +3,7 @@
 
 resource "aws_key_pair" "myKey" {
   key_name   = "my-key-pair"
-  public_key = file("/media/sahil/50BAFBCABAFBAA9C/devops-assignment/Terraform-cluster/mykey.pem.pub")
+  public_key = file("${path.module}/mykey.pem.pub")
 }
 
 data "aws_vpc" "default" {
