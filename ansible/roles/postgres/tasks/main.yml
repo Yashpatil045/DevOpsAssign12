@@ -1,0 +1,66 @@
+---
+- name: Set postgres variables
+  set_fact:
+    pg_container_name: "postgres_app"
+    pg_image: "postgres:13"
+    pg_db: "postgres"
+    pg_user: "postgres"
+    pg_password: "postgrespw"
+    pg_port: 5432
+    pg_volume: "pgdata"
+
+# --- ensure Docker volume exists (idempotent) ---
+- name: Check if postgres docker volume exists
+  shell: docker volume ls -q -f name={{ pg_volume }}
+  register: volcheck
+  changed_when: false
+  become: yes 
+
+- name: Create docker volume for postgres (if missing)
+  shell: docker volume create {{ pg_volume }}
+  when: volcheck.stdout == ""
+  register: volcreate
+  changed_when: "'Created' in volcreate.stdout"
+  become: yes
+
+# --- ensure image is present (pull if missing) ---
+- name: Check if postgres image exists locally
+  shell: docker images -q {{ pg_image }}
+  register: imgcheck
+  changed_when: false
+  become: yes 
+
+- name: Pull Postgres image (if missing)
+  shell: docker pull {{ pg_image }}
+  when: imgcheck.stdout == ""
+  register: imgpull
+  changed_when: imgpull.rc == 0
+  become: yes 
+
+# --- run container only if not already present ---
+- name: Check if postgres container exists
+  shell: docker ps -a -q -f name=^/{{ pg_container_name }}$
+  register: cont_check
+  changed_when: false
+  become: yes 
+- name: Run Postgres container (if not present)
+  shell: |
+    docker run -d --name {{ pg_container_name }} \
+      -e POSTGRES_DB={{ pg_db }} \
+      -e POSTGRES_USER={{ pg_user }} \
+      -e POSTGRES_PASSWORD={{ pg_password }} \
+      -v {{ pg_volume }}:/var/lib/postgresql/data \
+      -p {{ pg_port }}:5432 \
+      --restart unless-stopped \
+      {{ pg_image }}
+  when: cont_check.stdout == ""
+  register: pg_run
+  changed_when: pg_run.rc == 0
+  become: yes
+
+- name: Wait for Postgres to accept connections
+  wait_for:
+    host: 127.0.0.1
+    port: "{{ pg_port }}"
+    timeout: 60
+    state: started

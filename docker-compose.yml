@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - appnet
+    deploy:
+      placement:
+        constraints: [node.role == manager]  
+      restart_policy:
+        condition: on-failure
+  web:
+    image: sahilphatangare/django-devops:latest 
+    
+    
+    environment:
+      DJANGO_DB_HOST: "172.31.28.96"  
+      DJANGO_DB_PORT: "5432"
+      DJANGO_DB_USER: "postgres"
+      DJANGO_DB_PASSWORD: "postgrespw"
+      DJANGO_DB_NAME: "postgres"
+      
+    networks:
+      - appnet
+    
+    # --- Deployment Configuration ---
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        
+     
+      ports:
+        - target: 8000
+          published: 80
+          protocol: tcp
+          mode: ingress
+          
+networks:
+  appnet:
+    driver: overlay

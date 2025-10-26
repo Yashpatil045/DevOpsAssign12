@@ -1,0 +1,21 @@
+---
+# roles/swarm_worker/tasks/main.yml
+- name: Ensure Docker service is running
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes 
+
+- name: Wait for manager token to be available in hostvars
+  pause: 
+    seconds: 3
+  when: hostvars[groups['manager'][0]].swarm_worker_token is not defined
+
+- name: Join this node to the swarm
+  shell: |
+    docker swarm join --token {{ hostvars[groups['manager'][0]].swarm_worker_token }} {{ hostvars[groups['manager'][0]].ansible_host }}:2377
+  register: join_swarm
+  changed_when: "'This node joined a swarm as a worker' in join_swarm.stdout"
+  failed_when: join_swarm.rc != 0 and "This node is already part of a swarm" not in join_swarm.stderr
+  become: yes 

@@ -1,0 +1,30 @@
+---
+- name: Install docker on all nodes
+  hosts: all
+  become: yes
+  roles:
+    - docker
+
+- name: Install Jenkins on controller
+  hosts: controller
+  become: yes
+  roles:
+    - controller
+
+- name: Initialize swarm on manager
+  hosts: manager
+  become: yes
+  roles:
+    - swarm_manager
+
+- name: Join workers to swarm
+  hosts: workers
+  become: yes
+  roles:
+    - swarm_worker
+
+- name: Start Postgre container on manager
+  hosts: manager
+  become: yes
+  roles:
+    - postgres

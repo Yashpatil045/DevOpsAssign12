@@ -1,0 +1,12 @@
+# In devops-assignment/.dockerignore
+.git
+__pycache__
+*.pyc
+*.pyo
+*.log
+venv/
+ansible/
+Terraform-cluster/
+mykey.pem
+mykey.pem.pub
+terraform.tfstate

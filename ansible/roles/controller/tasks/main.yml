@@ -1,0 +1,70 @@
+---
+# ansible/roles/controller/tasks/main.yml
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install prerequisites (curl, gnupg)
+  apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+      - ca-certificates
+    state: present
+
+- name: Ensure Java is present (Jenkins requirement)
+  apt:
+    name: openjdk-11-jre-headless
+    state: present
+
+- name: Add Jenkins apt key
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repo
+  apt_repository:
+    repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+    state: present
+    filename: jenkins
+
+- name: Ensure init.groovy.d directory exists (for initial admin user)
+  file:
+    path: /var/lib/jenkins/init.groovy.d
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: "0755"
+
+- name: Add basic-security groovy to create admin user (idempotent)
+  copy:
+    dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
+    content: |
+      import jenkins.model.*
+      import hudson.security.*
+      def instance = Jenkins.getInstance()
+      def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+      hudsonRealm.createAccount("admin","Admin@123")
+      instance.setSecurityRealm(hudsonRealm)
+      def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+      strategy.setAllowAnonymousRead(false)
+      instance.setAuthorizationStrategy(strategy)
+      instance.save()
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
+  notify: restart jenkins
+
+- name: Install Jenkins package
+  apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+
+- name: Ensure Jenkins service is started and enabled
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
