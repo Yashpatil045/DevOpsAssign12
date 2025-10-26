@@ -1,11 +1,11 @@
 #ansible/inventory/hosts
 
 [controller]
-13.217.224.24 ansible_user=ubuntu ansible_ssh_private_key_file=/media/sahil/50BAFBCABAFBAA9C/devops-assignment/Terraform-cluster/mykey.pem
+13.217.224.24 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
 
 [manager]
-98.91.19.249 ansible_user=ubuntu ansible_ssh_private_key_file=/media/sahil/50BAFBCABAFBAA9C/devops-assignment/Terraform-cluster/mykey.pem
+98.91.19.249 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
 
 [workers]
-52.207.228.94 ansible_user=ubuntu ansible_ssh_private_key_file=/media/sahil/50BAFBCABAFBAA9C/devops-assignment/Terraform-cluster/mykey.pem
-54.235.29.54 ansible_user=ubuntu ansible_ssh_private_key_file=/media/sahil/50BAFBCABAFBAA9C/devops-assignment/Terraform-cluster/mykey.pem
+52.207.228.94 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
+54.235.29.54 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
