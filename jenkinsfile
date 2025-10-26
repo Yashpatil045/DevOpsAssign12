@@ -4,11 +4,11 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE_REPO = "sahilphatangare/django-devops"
+        DOCKER_IMAGE_REPO = "yashpatil045/django-devops"
         DOCKER_IMAGE_TAG = "${env.BUILD_NUMBER}"
         SWARM_MANAGER_IP = "98.91.19.249" 
         
-        DOCKERHUB_USERNAME = "sahilphatangare"
+        DOCKERHUB_USERNAME = "yashpatil045"
         DOCKERHUB_CREDENTIAL_ID = 'dockerhub-credentials'
         
         SSH_CREDENTIAL_ID = 'swarm-ssh-key'               
