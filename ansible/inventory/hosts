@@ -1,11 +1,11 @@
 #ansible/inventory/hosts
 
 [controller]
-13.217.224.24 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
+controller-node ansible_host=10.0.1.10 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/yash-devops-key.pem
 
 [manager]
-98.91.19.249 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
+swarm-manager ansible_host=10.0.1.20 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/yash-devops-key.pem
 
 [workers]
-52.207.228.94 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
-54.235.29.54 ansible_user=ubuntu ansible_ssh_private_key_file=../Terraform-cluster/mykey.pem
+worker-node-1 ansible_host=10.0.1.30 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/yash-devops-key.pem
+worker-node-2 ansible_host=10.0.1.40 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/yash-devops-key.pem

@@ -1,9 +1,9 @@
 
 # Terraform-cluster/main.tf
 
-resource "aws_key_pair" "myKey" {
-  key_name   = "my-key-pair"
-  public_key = file("${path.module}/mykey.pem.pub")
+resource "aws_key_pair" "yashKey" {
+  key_name   = "yash-devops-key"
+  public_key = file("${path.module}/yash-devops-key.pem.pub")
 }
 
 data "aws_vpc" "default" {
@@ -111,10 +111,10 @@ resource "aws_security_group" "cluster_sg" {
 # Spot Instances via aws_instance + instance_market_options
 # -------------------------
 
-resource "aws_instance" "controller" {
+resource "aws_instance" "yash_controller" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
-  key_name               = aws_key_pair.myKey.key_name
+  key_name               = aws_key_pair.yashKey.key_name
   vpc_security_group_ids = [aws_security_group.cluster_sg.id]
 
   instance_market_options {
@@ -130,14 +130,16 @@ resource "aws_instance" "controller" {
   
 
   tags = {
-    Name = "Controller"
+    Name = "Yash-Controller"
+    Owner = "Yash-Patil"
+    Project = "DevOps-Assignment-A751"
   }
 }
 
-resource "aws_instance" "swarm_manager" {
+resource "aws_instance" "yash_swarm_manager" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
-  key_name               = aws_key_pair.myKey.key_name
+  key_name               = aws_key_pair.yashKey.key_name
   vpc_security_group_ids = [aws_security_group.cluster_sg.id]
 
   instance_market_options {
@@ -151,14 +153,16 @@ resource "aws_instance" "swarm_manager" {
 
 
   tags = {
-    Name = "swarm-manager"
+    Name = "Yash-Swarm-Manager"
+    Owner = "Yash-Patil"
+    Project = "DevOps-Assignment-A751"
   }
 }
 
-resource "aws_instance" "worker1" {
+resource "aws_instance" "yash_worker1" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
-  key_name               = aws_key_pair.myKey.key_name
+  key_name               = aws_key_pair.yashKey.key_name
   vpc_security_group_ids = [aws_security_group.cluster_sg.id]
 
   instance_market_options {
@@ -172,14 +176,16 @@ resource "aws_instance" "worker1" {
 
 
   tags = {
-    Name = "worker-1"
+    Name = "Yash-Worker-1"
+    Owner = "Yash-Patil"
+    Project = "DevOps-Assignment-A751"
   }
 }
 
-resource "aws_instance" "worker2" {
+resource "aws_instance" "yash_worker2" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
-  key_name               = aws_key_pair.myKey.key_name
+  key_name               = aws_key_pair.yashKey.key_name
   vpc_security_group_ids = [aws_security_group.cluster_sg.id]
 
   instance_market_options {
@@ -193,7 +199,9 @@ resource "aws_instance" "worker2" {
 
 
   tags = {
-    Name = "worker-2"
+    Name = "Yash-Worker-2"
+    Owner = "Yash-Patil"
+    Project = "DevOps-Assignment-A751"
   }
 }
 
